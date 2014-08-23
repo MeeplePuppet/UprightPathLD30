@@ -21,7 +21,6 @@ public class Main extends Game {
      * Used to swap screens or do something while waiting for loading to complete.
      */
     public void loadingAssets() {
-
     }
 
     /**
