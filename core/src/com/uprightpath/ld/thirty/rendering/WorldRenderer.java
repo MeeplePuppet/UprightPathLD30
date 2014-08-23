@@ -56,8 +56,6 @@ public class WorldRenderer {
                 shapeRenderer.setColor(Color.ORANGE);
             }
             shapeRenderer.polygon(agent.getPolygonCollision().getTransformedVertices());
-            shapeRenderer.setColor(Color.PINK);
-            shapeRenderer.polygon(agent.getPolygonBase().getTransformedVertices());
             shapeRenderer.setColor(Color.PURPLE);
             if (agent.getPlatform() != null) {
                 shapeRenderer.polygon(agent.getPlatform().getPolygon().getTransformedVertices());

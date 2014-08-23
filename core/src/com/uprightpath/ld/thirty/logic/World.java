@@ -46,7 +46,7 @@ public class World {
                 agent.applyDelta(worldDelta.x, 0);
                 agent.translate(agent.getDelta().x, 0);
                 Vector2 position = agent.getPlatform().getPosition(agent);
-                if (position != null) {
+                if (position != null && position.y >= agent.getPosition().y) {
                     agent.setPosition(position);
                     collided = agent.getPlatform();
                     if (agent.getDelta().y < 0) {
@@ -61,12 +61,10 @@ public class World {
             for (int j = 0; j < platforms.size; j++) {
                 platform = platforms.get(j);
                 Vector2 position = platform.getPosition(agent);
-                if (position != null) {
-                    if (position.y > agent.getPosition().y) {
-                        agent.setPosition(position);
-                        collided = platform;
-                        agent.getDelta().y = 0;
-                    }
+                if (position != null && position.y > agent.getPosition().y) {
+                    agent.setPosition(position);
+                    collided = platform;
+                    agent.getDelta().y = 0;
                 }
             }
             agent.setPlatform(collided);

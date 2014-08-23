@@ -44,7 +44,6 @@ public class Agent {
     public void translate(float x, float y) {
         this.position.add(x, y);
         this.polygonCollision.translate(x, y);
-        this.polygonBase.translate(x, y);
     }
 
     public Vector2 getDelta() {
@@ -61,10 +60,6 @@ public class Agent {
 
     public Polygon getPolygonCollision() {
         return polygonCollision;
-    }
-
-    public Polygon getPolygonBase() {
-        return polygonBase;
     }
 
     public void applyDelta(Vector2 delta) {
