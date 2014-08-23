@@ -8,15 +8,19 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class Agent {
     private String name;
-    private Polygon polygon;
+    private Polygon polygonCollision;
+    private Polygon polygonBase;
     private Vector2 position;
     private Vector2 delta;
-    private boolean falling;
+    private AgentController agentController;
+    private Platform platform;
 
-    public Agent(String name, Polygon polygon) {
+    public Agent(String name, Polygon polygonCollision, Polygon polygonBase) {
         this.name = name;
-        this.polygon = new Polygon(polygon.getVertices());
+        this.polygonCollision = new Polygon(polygonCollision.getVertices());
+        this.polygonBase = new Polygon(polygonBase.getVertices());
         this.position = new Vector2();
+        delta = new Vector2();
     }
 
     public Vector2 getPosition() {
@@ -24,23 +28,23 @@ public class Agent {
     }
 
     public void setPosition(Vector2 position) {
-        this.position.set(position);
-        this.polygon.setPosition(position.x, position.y);
+        this.setPosition(position.x, position.y);
     }
 
     public void setPosition(float x, float y) {
         this.position.set(x, y);
-        this.polygon.setPosition(position.x, position.y);
+        this.polygonCollision.setPosition(position.x, position.y);
+        this.polygonBase.setPosition(position.x, position.y);
     }
 
     public void translate(Vector2 change) {
-        this.position.add(change);
-        this.polygon.translate(change.x, change.y);
+        this.translate(change.x, change.y);
     }
 
     public void translate(float x, float y) {
         this.position.add(x, y);
-        this.polygon.translate(x, y);
+        this.polygonCollision.translate(x, y);
+        this.polygonBase.translate(x, y);
     }
 
     public Vector2 getDelta() {
@@ -55,15 +59,53 @@ public class Agent {
         this.delta.set(x, y);
     }
 
-    public boolean isFalling() {
-        return falling;
+    public Polygon getPolygonCollision() {
+        return polygonCollision;
     }
 
-    public void setFalling(boolean falling) {
-        this.falling = falling;
+    public Polygon getPolygonBase() {
+        return polygonBase;
     }
 
-    public Polygon getPolygon() {
-        return polygon;
+    public void applyDelta(Vector2 delta) {
+        this.applyDelta(delta.x, delta.y);
+    }
+
+    public void applyDelta(float x, float y) {
+        this.delta.add(x, y);
+        if (delta.x > .2f) {
+            delta.x = .2f;
+        } else if (delta.x < -.2f) {
+            delta.x = -.2f;
+        }
+        if (delta.y < -1) {
+            delta.y = -1;
+        }
+    }
+
+    public void setAgentController(AgentController agentController) {
+        this.agentController = agentController;
+    }
+
+    public AgentController getAgentController() {
+        return agentController;
+    }
+
+    public Platform getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(Platform platform) {
+        this.platform = platform;
+    }
+
+    public void applyPlatform() {
+        if (platform != null) {
+            this.translate(platform.getDelta());
+            delta.x *= platform.getFriction();
+            if (Math.abs(delta.x) < .01f) {
+                delta.x = 0;
+            }
+        }
     }
 }

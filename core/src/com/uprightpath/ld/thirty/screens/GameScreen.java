@@ -25,10 +25,8 @@ public abstract class GameScreen implements Screen {
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Draws the screen specific information, typically the game/background stuff
-        main.batch.begin();
+        // Implements the rendering.
         renderImplement(delta);
-        main.batch.end();
 
         // Draws the stage that's in use.
         stage.act(delta);
@@ -55,6 +53,11 @@ public abstract class GameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().setScreenSize(width, height);
+    }
+
+    @Override
+    public void pause() {
+
     }
 
     @Override
