@@ -18,16 +18,24 @@ public class PlayerAgentController extends AgentController<Player> {
     @Override
     public void updateAgentLogic() {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            agent.applyDelta(-.025f, 0);
+            agent.applyDelta(-agent.getMovement().x, 0);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            agent.applyDelta(.025f, 0);
+            agent.applyDelta(agent.getMovement().x, 0);
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Z) && agent.getPlatform() != null) {
-            agent.applyDelta(0, 1f);
-            jumpTime = 10;
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            agent.setFallingThrough(true);
+        } else {
+            agent.setFallingThrough(false);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Z) && Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            agent.setPlatform(null);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.Z) && agent.getPlatform() != null) {
+            agent.applyDelta(0, agent.getMovement().y);
+            agent.setPlatform(null);
+            jumpTime = agent.getJumpTime();
         } else if (Gdx.input.isKeyPressed(Input.Keys.Z) && jumpTime > 0) {
-            agent.applyDelta(0, .2f);
+            agent.applyDelta(0, agent.getMovement().y / agent.getJumpTime());
             jumpTime--;
         } else {
             jumpTime = 0;

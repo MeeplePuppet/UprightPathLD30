@@ -19,6 +19,6 @@ public class InclusionTrigger extends PolygonEventTrigger {
 
     @Override
     public boolean canTriggerEvent(Agent agent) {
-        return Intersector.overlapConvexPolygons(this.getPolygon(), agent.getPolygonCollision());
+        return Intersector.overlapConvexPolygons(this.getPolygon(), agent.getPolygon());
     }
 }

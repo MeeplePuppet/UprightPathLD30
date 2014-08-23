@@ -17,30 +17,40 @@ import com.uprightpath.ld.thirty.logic.World;
 public class WorldRenderer {
     private final Main main;
     private final World world;
-    private final Agent agent;
     private final ShapeRenderer shapeRenderer;
     private final Vector2 position = new Vector2();
     private OrthographicCamera camera;
+    private boolean front;
 
-    public WorldRenderer(Main main, World world, Agent agent) {
+    public WorldRenderer(Main main, World world) {
         this.main = main;
         this.world = world;
-        this.agent = agent;
         this.shapeRenderer = new ShapeRenderer();
         this.camera = new OrthographicCamera(Gdx.graphics.getWidth() / Gdx.graphics.getHeight() * main.getUnits(), main.getUnits());
         this.camera.translate(0, 0, 10);
         this.camera.lookAt(0, 0, 0);
     }
 
+    public void setFront(boolean front) {
+        this.front = front;
+    }
+
     public void render(float delta) {
-        agent.getPolygonCollision().getBoundingRectangle().getCenter(position);
-        System.out.println(position);
+        world.getPlayer().getPolygon().getBoundingRectangle().getCenter(position);
         camera.position.set(position.x, position.y, 10);
         camera.update();
+        float alpha;
+        if (front) {
+            Gdx.gl.glLineWidth(1);
+            alpha = 1;
+        } else {
+            Gdx.gl.glLineWidth(3);
+            alpha = .2f;
+        }
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         Collision collision;
-        shapeRenderer.setColor(Color.BLUE);
+        shapeRenderer.setColor(0, 1, 0, alpha);
         for (int i = 0; i < world.getCollisions().size; i++) {
             collision = world.getCollisions().get(i);
             shapeRenderer.polygon(collision.getPolygon().getTransformedVertices());
@@ -50,27 +60,26 @@ public class WorldRenderer {
         shapeRenderer.setColor(Color.BLUE);
         for (int i = 0; i < world.getPlatforms().size; i++) {
             platform = world.getPlatforms().get(i);
-            shapeRenderer.setColor(Color.BLUE);
+            shapeRenderer.setColor(0, 1, 0, alpha);
             shapeRenderer.polygon(platform.getPolygon().getTransformedVertices());
-
-            shapeRenderer.setColor(Color.CYAN);
+            shapeRenderer.setColor(0, .5f, .5f, alpha);
             shapeRenderer.polygon(platform.getPolygonPlatform().getTransformedVertices());
         }
 
         Agent agent;
         for (int i = 0; i < world.getAgents().size; i++) {
             agent = world.getAgents().get(i);
-            if (agent.getPlatform() == null) {
-                shapeRenderer.setColor(Color.RED);
+            if (world.getPlayer() == agent) {
+                shapeRenderer.setColor(0, 0, 1, alpha);
             } else {
-                shapeRenderer.setColor(Color.ORANGE);
+                shapeRenderer.setColor(1, 0, 0, alpha);
             }
-            shapeRenderer.polygon(agent.getPolygonCollision().getTransformedVertices());
-            shapeRenderer.setColor(Color.MAGENTA);
+            shapeRenderer.polygon(agent.getPolygon().getTransformedVertices());
+            shapeRenderer.setColor(0, .5f, 1f, alpha);
             shapeRenderer.polygon(agent.getPolygonBase().getTransformedVertices());
-            shapeRenderer.setColor(Color.PURPLE);
+            shapeRenderer.setColor(1, .5f, .5f, alpha);
             if (agent.getPlatform() != null) {
-                shapeRenderer.polygon(agent.getPlatform().getPolygon().getTransformedVertices());
+                shapeRenderer.polygon(agent.getPlatform().getPolygonPlatform().getTransformedVertices());
             }
         }
         shapeRenderer.end();

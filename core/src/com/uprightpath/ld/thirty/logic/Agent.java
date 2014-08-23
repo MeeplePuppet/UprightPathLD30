@@ -6,62 +6,25 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * Created by Geo on 8/22/2014.
  */
-public class Agent {
-    private String name;
-    private Polygon polygonCollision;
-    private Polygon polygonBase;
-    private Vector2 position;
-    private Vector2 delta;
-    private AgentController agentController;
-    private Platform platform;
+public class Agent extends WorldObject {
+    protected final String name;
+    protected Polygon polygonBase;
+    protected Vector2 maxDelta;
+    protected Vector2 movement;
+    protected boolean fallingThrough = false;
+    protected AgentController agentController;
+    protected Platform platform;
+    private int jumpTime;
 
-    public Agent(String name, Polygon polygonCollision, Polygon polygonBase) {
+    public Agent(String name, Polygon polygon, Polygon polygonBase) {
+        super(polygon);
         this.name = name;
-        this.polygonCollision = new Polygon(polygonCollision.getVertices());
         this.polygonBase = new Polygon(polygonBase.getVertices());
-        this.position = new Vector2();
-        delta = new Vector2();
     }
 
-    public Vector2 getPosition() {
-        return position;
-    }
-
-    public void setPosition(Vector2 position) {
-        this.setPosition(position.x, position.y);
-    }
-
-    public void setPosition(float x, float y) {
-        this.position.set(x, y);
-        this.polygonCollision.setPosition(x, y);
-        this.polygonBase.setPosition(x, y);
-
-    }
-
-    public void translate(Vector2 change) {
-        this.translate(change.x, change.y);
-    }
-
-    public void translate(float x, float y) {
-        this.position.add(x, y);
-        this.polygonCollision.translate(x, y);
-        this.polygonBase.translate(x, y);
-    }
-
-    public Vector2 getDelta() {
-        return delta;
-    }
-
-    public void setDelta(Vector2 delta) {
-        this.delta.set(delta);
-    }
-
-    public void setDelta(float x, float y) {
-        this.delta.set(x, y);
-    }
-
-    public Polygon getPolygonCollision() {
-        return polygonCollision;
+    public void updatePosition() {
+        this.polygon.setPosition(position.x, position.y);
+        this.polygonBase.setPosition(position.x, position.y);
     }
 
     public void applyDelta(Vector2 delta) {
@@ -70,16 +33,18 @@ public class Agent {
 
     public void applyDelta(float x, float y) {
         this.delta.add(x, y);
-        if (delta.x > .2f) {
-            delta.x = .2f;
-        } else if (delta.x < -.2f) {
-            delta.x = -.2f;
+    }
+
+    public void applyDeltaLimits() {
+        if (delta.x > maxDelta.x) {
+            delta.x = maxDelta.x;
+        } else if (delta.x < -maxDelta.x) {
+            delta.x = -maxDelta.x;
         }
-        if (delta.y < -1) {
-            delta.y = -1;
-        }
-        if (delta.y > 1) {
-            delta.y = 1;
+        if (delta.y > maxDelta.y) {
+            delta.y = maxDelta.y;
+        } else if (delta.y < -maxDelta.y) {
+            delta.y = -maxDelta.y;
         }
     }
 
@@ -111,5 +76,37 @@ public class Agent {
 
     public Polygon getPolygonBase() {
         return polygonBase;
+    }
+
+    public boolean isFallingThrough() {
+        return fallingThrough;
+    }
+
+    public void setFallingThrough(boolean fallingThrough) {
+        this.fallingThrough = fallingThrough;
+    }
+
+    public Vector2 getMaxDelta() {
+        return maxDelta;
+    }
+
+    public void setMaxDelta(Vector2 maxDelta) {
+        this.maxDelta = maxDelta;
+    }
+
+    public Vector2 getMovement() {
+        return movement;
+    }
+
+    public void setMovement(Vector2 movement) {
+        this.movement = movement;
+    }
+
+    public int getJumpTime() {
+        return jumpTime;
+    }
+
+    public void setJumpTime(int jumpTime) {
+        this.jumpTime = jumpTime;
     }
 }
