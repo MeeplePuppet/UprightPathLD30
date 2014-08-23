@@ -3,9 +3,9 @@ package com.uprightpath.ld.thirty.screens;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.uprightpath.ld.thirty.Main;
-import com.uprightpath.ld.thirty.logic.GameArrangement;
 import com.uprightpath.ld.thirty.logic.Platform;
 import com.uprightpath.ld.thirty.logic.World;
+import com.uprightpath.ld.thirty.logic.WorldGroup;
 import com.uprightpath.ld.thirty.logic.agents.Player;
 import com.uprightpath.ld.thirty.logic.controller.PlayerAgentController;
 import com.uprightpath.ld.thirty.logic.event.PlatformMovementEvent;
@@ -18,7 +18,7 @@ import com.uprightpath.ld.thirty.logic.triggers.TimerEventTrigger;
  * Created by Geo on 8/22/2014.
  */
 public class WorldScreen extends GameScreen {
-    private final GameArrangement gameArrangement;
+    private final WorldGroup gameArrangement;
     private World world;
     private Player player;
     private float tick = 1f / 60f;
@@ -27,7 +27,7 @@ public class WorldScreen extends GameScreen {
     public WorldScreen(Main main) {
         super(main);
 
-        gameArrangement = new GameArrangement(main);
+        gameArrangement = new WorldGroup(main);
 
         player = new Player("Player", new Polygon(new float[]{0, 0, 1, 0, 1, 2, 0, 2}), new Polygon(new float[]{0, -.3f, 1, -.3f, 1, .3f, 0, .3f}));
         player.setPosition(2f, 2f);
@@ -36,7 +36,7 @@ public class WorldScreen extends GameScreen {
         player.setMovement(new Vector2(.05f, .5f));
         player.setJumpTime(30);
 
-        world = new World(main, player);
+        world = new World(main, gameArrangement, player);
         world.setWorldDelta(new Vector2(0f, -.05f));
 
         Platform platform;
@@ -76,7 +76,7 @@ public class WorldScreen extends GameScreen {
         player.setMovement(new Vector2(.05f, .5f));
         player.setJumpTime(30);
 
-        world = new World(main, player);
+        world = new World(main, gameArrangement, player);
         world.setWorldDelta(new Vector2(0f, -.05f));
 
 
@@ -108,9 +108,14 @@ public class WorldScreen extends GameScreen {
     @Override
     protected void renderImplement(float delta) {
         accum += delta;
-        while (accum > tick) {
-            accum -= tick;
-            gameArrangement.update();
+        if (gameArrangement.isTellingStory()) {
+            while (accum > tick) {
+                accum -= tick;
+                gameArrangement.update();
+
+            }
+        } else {
+
         }
         gameArrangement.render(delta);
     }

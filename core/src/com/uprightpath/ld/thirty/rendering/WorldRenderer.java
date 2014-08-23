@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.uprightpath.ld.thirty.Main;
 import com.uprightpath.ld.thirty.logic.Agent;
 import com.uprightpath.ld.thirty.logic.Collision;
@@ -35,11 +36,18 @@ public class WorldRenderer {
         this.front = front;
     }
 
-    public void render(float delta) {
+    public Vector3 getCamera() {
         world.getPlayer().getPolygon().getBoundingRectangle().getCenter(position);
+        Vector3 previous = new Vector3(camera.position);
         camera.position.set(position.x, position.y, 10);
-        camera.update();
+        previous.sub(camera.position);
+        return previous.scl(-1);
+    }
+
+    public void render(float delta) {
         float alpha;
+        camera.update();
+        shapeRenderer.setProjectionMatrix(camera.combined);
         if (front) {
             Gdx.gl.glLineWidth(1);
             alpha = 1;
@@ -83,5 +91,9 @@ public class WorldRenderer {
             }
         }
         shapeRenderer.end();
+    }
+
+    public void updateCamera(Vector3 update) {
+        camera.position.add(update);
     }
 }

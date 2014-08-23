@@ -2,6 +2,7 @@ package com.uprightpath.ld.thirty.logic;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.uprightpath.ld.thirty.Main;
 import com.uprightpath.ld.thirty.logic.agents.Player;
@@ -13,6 +14,7 @@ import com.uprightpath.ld.thirty.rendering.WorldRenderer;
  */
 public class World {
     private final Main main;
+    private final WorldGroup worldGroup;
     private Player player;
     private final WorldRenderer worldRenderer;
     private Array<Agent> agents = new Array<Agent>();
@@ -23,8 +25,9 @@ public class World {
     private Vector2 worldDelta = new Vector2();
     private Intersector.MinimumTranslationVector mtv = new Intersector.MinimumTranslationVector();
 
-    public World(Main main, Player player) {
+    public World(Main main, WorldGroup worldGroup, Player player) {
         this.player = player;
+        this.worldGroup = worldGroup;
         this.main = main;
         this.agents.add(player);
         worldRenderer = new WorldRenderer(this.main, this);
@@ -188,5 +191,9 @@ public class World {
 
     public WorldRenderer getWorldRenderer() {
         return worldRenderer;
+    }
+
+    public WorldGroup getWorldGroup() {
+        return worldGroup;
     }
 }
