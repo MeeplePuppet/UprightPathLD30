@@ -3,15 +3,15 @@ package com.uprightpath.ld.thirty.logic;
 /**
  * Created by Geo on 8/22/2014.
  */
-public abstract class EventTrigger {
+public abstract class AgentEventTrigger {
     protected final World world;
-    protected Event event;
+    protected AgentEvent event;
 
-    public EventTrigger(World world) {
+    public AgentEventTrigger(World world) {
         this.world = world;
     }
 
-    public EventTrigger(World world, Event event) {
+    public AgentEventTrigger(World world, AgentEvent event) {
         this.world = world;
         this.event = event;
     }
@@ -22,7 +22,7 @@ public abstract class EventTrigger {
         event.trigger(world, agent);
     }
 
-    public void setEvent(Event event) {
+    public void setEvent(AgentEvent event) {
         this.event = event;
     }
 }

@@ -33,8 +33,9 @@ public class Agent {
 
     public void setPosition(float x, float y) {
         this.position.set(x, y);
-        this.polygonCollision.setPosition(position.x, position.y);
-        this.polygonBase.setPosition(position.x, position.y);
+        this.polygonCollision.setPosition(x, y);
+        this.polygonBase.setPosition(x, y);
+
     }
 
     public void translate(Vector2 change) {
@@ -44,6 +45,7 @@ public class Agent {
     public void translate(float x, float y) {
         this.position.add(x, y);
         this.polygonCollision.translate(x, y);
+        this.polygonBase.translate(x, y);
     }
 
     public Vector2 getDelta() {
@@ -76,6 +78,9 @@ public class Agent {
         if (delta.y < -1) {
             delta.y = -1;
         }
+        if (delta.y > 1) {
+            delta.y = 1;
+        }
     }
 
     public void setAgentController(AgentController agentController) {
@@ -102,5 +107,9 @@ public class Agent {
                 delta.x = 0;
             }
         }
+    }
+
+    public Polygon getPolygonBase() {
+        return polygonBase;
     }
 }

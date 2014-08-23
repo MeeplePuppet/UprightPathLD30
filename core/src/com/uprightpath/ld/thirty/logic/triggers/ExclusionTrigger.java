@@ -2,8 +2,7 @@ package com.uprightpath.ld.thirty.logic.triggers;
 
 import com.badlogic.gdx.math.Intersector;
 import com.uprightpath.ld.thirty.logic.Agent;
-import com.uprightpath.ld.thirty.logic.Event;
-import com.uprightpath.ld.thirty.logic.PolygonEventTrigger;
+import com.uprightpath.ld.thirty.logic.AgentEvent;
 import com.uprightpath.ld.thirty.logic.World;
 
 /**
@@ -14,7 +13,7 @@ public class ExclusionTrigger extends PolygonEventTrigger {
         super(world);
     }
 
-    public ExclusionTrigger(World world, Event event) {
+    public ExclusionTrigger(World world, AgentEvent event) {
         super(world, event);
     }
 

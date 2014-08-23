@@ -14,7 +14,8 @@ public class World {
     private Array<Agent> agents = new Array<Agent>();
     private Array<Collision> collisions = new Array<Collision>();
     private Array<Platform> platforms = new Array<Platform>();
-    private Array<EventTrigger> eventTriggers = new Array<EventTrigger>();
+    private Array<AgentEventTrigger> agentEventTriggers = new Array<AgentEventTrigger>();
+    private Array<WorldEventTrigger> worldEventTriggers = new Array<WorldEventTrigger>();
     private Vector2 worldDelta;
     private Intersector.MinimumTranslationVector mtv = new Intersector.MinimumTranslationVector();
 
@@ -35,10 +36,24 @@ public class World {
         Agent agent;
         Collision collision;
         Platform platform, collided = null;
-        EventTrigger eventTrigger;
+        AgentEventTrigger agentEventTrigger;
+        WorldEventTrigger worldEventTrigger;
+
+        for (int j = 0; j < platforms.size; j++) {
+            platform = platforms.get(j);
+            platform.translate(platform.getDelta());
+        }
+
+        for (int j = 0; j < collisions.size; j++) {
+            collision = collisions.get(j);
+            collided.translate(collision.getDelta());
+        }
+
+
         for (int i = 0; i < agents.size; i++) {
             agent = agents.get(i);
             agent.getAgentController().updateAgentLogic();
+            agent.applyPlatform();
             if (agent.getPlatform() == null) {
                 agent.applyDelta(worldDelta);
                 agent.translate(agent.getDelta());
@@ -57,7 +72,6 @@ public class World {
                 }
                 agent.translate(0, agent.getDelta().y);
             }
-            agent.applyPlatform();
             for (int j = 0; j < platforms.size; j++) {
                 platform = platforms.get(j);
                 Vector2 position = platform.getPosition(agent);
@@ -102,13 +116,18 @@ public class World {
                     }
                 }
             }
-            for (int j = 0; j < eventTriggers.size; j++) {
-                eventTrigger = eventTriggers.get(i);
-                if (eventTrigger.canTriggerEvent(agent)) {
-                    eventTrigger.triggerEvent(agent);
+            for (int j = 0; j < agentEventTriggers.size; j++) {
+                agentEventTrigger = agentEventTriggers.get(i);
+                if (agentEventTrigger.canTriggerEvent(agent)) {
+                    agentEventTrigger.triggerEvent(agent);
                 }
             }
-            System.out.println(agent.getDelta());
+        }
+        for (int j = 0; j < worldEventTriggers.size; j++) {
+            worldEventTrigger = worldEventTriggers.get(j);
+            if (worldEventTrigger.canTriggerEvent()) {
+                worldEventTrigger.triggerEvent();
+            }
         }
     }
 
@@ -136,11 +155,15 @@ public class World {
         this.platforms.add(platform);
     }
 
-    public void addEventTrigger(PolygonEventTrigger eventTrigger) {
-        this.eventTriggers.add(eventTrigger);
+    public void addEventTrigger(AgentEventTrigger eventTrigger) {
+        this.agentEventTriggers.add(eventTrigger);
     }
 
     public Main getMain() {
         return main;
+    }
+
+    public void addWorldEventTrigger(WorldEventTrigger worldEventTrigger) {
+        this.worldEventTriggers.add(worldEventTrigger);
     }
 }

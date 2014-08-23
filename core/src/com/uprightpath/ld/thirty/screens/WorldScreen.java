@@ -4,12 +4,14 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.uprightpath.ld.thirty.Main;
 import com.uprightpath.ld.thirty.logic.Platform;
-import com.uprightpath.ld.thirty.logic.PolygonEventTrigger;
 import com.uprightpath.ld.thirty.logic.World;
 import com.uprightpath.ld.thirty.logic.agents.Player;
 import com.uprightpath.ld.thirty.logic.controller.PlayerAgentController;
+import com.uprightpath.ld.thirty.logic.event.PlatformMovementEvent;
 import com.uprightpath.ld.thirty.logic.event.ReloadEvent;
 import com.uprightpath.ld.thirty.logic.triggers.ExclusionTrigger;
+import com.uprightpath.ld.thirty.logic.triggers.PolygonEventTrigger;
+import com.uprightpath.ld.thirty.logic.triggers.TimerEventTrigger;
 import com.uprightpath.ld.thirty.rendering.WorldRenderer;
 
 /**
@@ -30,7 +32,21 @@ public class WorldScreen extends GameScreen {
         player.setPosition(2f, 2f);
         player.setAgentController(new PlayerAgentController(player));
         world.addAgent(player);
+
         Platform platform;
+        PolygonEventTrigger polygonEventTrigger;
+        TimerEventTrigger timerEventTrigger;
+
+
+        platform = new Platform(world);
+        platform.setSurface(new Vector2(-1, 1), new Vector2(0, 1), new Polygon((new float[]{-1, 0, 0, 0, 0, 1, -1, 1})));
+        world.addPlatform(platform);
+
+        timerEventTrigger = new TimerEventTrigger(world, new PlatformMovementEvent(platform, new Vector2[]{new Vector2(0, .2f), new Vector2(.2f, 0), new Vector2(0, 0), new Vector2(-.2f, 0), new Vector2(0, -.2f), new Vector2(0, 0)}));
+        timerEventTrigger.setLooping(true);
+        timerEventTrigger.setTimer(30);
+        world.addWorldEventTrigger(timerEventTrigger);
+
         platform = new Platform(world);
         platform.setSurface(new Vector2(0, 1), new Vector2(10, 1), new Polygon((new float[]{0, 0, 10, 0, 10, 1, 0, 1})));
         world.addPlatform(platform);
@@ -40,12 +56,11 @@ public class WorldScreen extends GameScreen {
         platform = new Platform(world);
         platform.setSurface(new Vector2(12, 1), new Vector2(14, 1), new Polygon((new float[]{12, 0, 14, 0, 14, 1, 12, 1})));
         world.addPlatform(platform);
-        PolygonEventTrigger eventTrigger;
-        eventTrigger = new ExclusionTrigger(world, new ReloadEvent());
-        eventTrigger.setPolygon(new Polygon(new float[]{-10, -10, 31, -10, 31, 31, -10, 31}));
-        world.addEventTrigger(eventTrigger);
+        polygonEventTrigger = new ExclusionTrigger(world, new ReloadEvent());
+        polygonEventTrigger.setPolygon(new Polygon(new float[]{-10, -10, 31, -10, 31, 31, -10, 31}));
+        world.addEventTrigger(polygonEventTrigger);
 
-        worldRenderer = new WorldRenderer(main, world);
+        worldRenderer = new WorldRenderer(main, world, player);
     }
 
     @Override
