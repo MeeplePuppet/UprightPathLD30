@@ -3,7 +3,7 @@ package com.uprightpath.ld.thirty.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.uprightpath.ld.thirty.UprightPathLD30;
+import com.uprightpath.ld.thirty.Main;
 
 public class HtmlLauncher extends GwtApplication {
 
@@ -14,6 +14,6 @@ public class HtmlLauncher extends GwtApplication {
 
         @Override
         public ApplicationListener getApplicationListener () {
-                return new UprightPathLD30();
+                return new Main();
         }
 }
