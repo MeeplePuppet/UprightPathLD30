@@ -1,6 +1,5 @@
 package com.uprightpath.ld.thirty.logic;
 
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 
 
@@ -9,6 +8,9 @@ import com.badlogic.gdx.math.Polygon;
  */
 public class Collision extends WorldObject {
     private boolean collidable = true;
+
+    public Collision() {
+    }
 
     public Collision(Polygon polygon) {
         super(polygon);
@@ -23,7 +25,7 @@ public class Collision extends WorldObject {
     }
 
     public boolean canCollide(Agent agent) {
-        return collidable && Intersector.overlaps(agent.getPolygon().getBoundingRectangle(), polygon.getBoundingRectangle());
+        return collidable && super.canCollide(agent);
     }
 
     public void updatePosition() {

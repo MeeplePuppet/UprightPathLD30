@@ -3,19 +3,25 @@ package com.uprightpath.ld.thirty.logic;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
+import com.uprightpath.ld.thirty.rendering.Renderable;
+import com.uprightpath.ld.thirty.rendering.Renderer;
 
 
 /**
  * Created by Geo on 8/22/2014.
  */
-public class Platform extends Collision {
-    private float friction = .9f;
+public class Platform extends Collision implements Renderable {
+    private float friction = .7f;
     private Vector2 start;
     private Vector2 end;
     private Vector2 initStart = new Vector2();
     private Vector2 initEnd = new Vector2();
     private Vector2 normal;
     private Polygon polygonPlatform;
+    private Renderer renderer;
+
+    public Platform() {
+    }
 
     public Platform(Polygon polygon) {
         super(polygon);
@@ -32,15 +38,13 @@ public class Platform extends Collision {
     }
 
     public Vector2 getPosition(Agent agent) {
-        if (!Intersector.overlapConvexPolygons(agent.getPolygonBase(), polygonPlatform)) {
+        if (!Intersector.overlapConvexPolygons(agent.getPolygonBase(), polygonPlatform) || agent.getDelta().dot(normal) > 0 && agent.getDelta().y > 0) {
             return null;
         }
-        System.out.println("At least here?");
         float minX = agent.getPolygon().getBoundingRectangle().x;
         float maxX = minX + agent.getPolygon().getBoundingRectangle().width;
         Vector2 left = new Vector2();
         Vector2 right = new Vector2();
-        System.out.println(start + " - " + end);
         if (minX >= start.x && maxX <= end.x) {
             Intersector.intersectLines(minX, 0, minX, 1, start.x, start.y, end.x, end.y, left);
             Intersector.intersectLines(maxX, 0, maxX, 1, start.x, start.y, end.x, end.y, right);
@@ -81,5 +85,18 @@ public class Platform extends Collision {
         polygon.setPosition(position.x, position.y);
         start.set(position).add(initStart);
         end.set(position).add(initEnd);
+        if (renderer != null) {
+            renderer.setPosition(position.x, position.y);
+        }
+    }
+
+    @Override
+    public Renderer getRenderer() {
+        return renderer;
+    }
+
+    @Override
+    public void setRenderer(Renderer renderer) {
+        this.renderer = renderer;
     }
 }

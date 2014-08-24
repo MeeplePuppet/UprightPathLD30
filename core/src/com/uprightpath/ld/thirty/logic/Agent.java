@@ -2,19 +2,27 @@ package com.uprightpath.ld.thirty.logic;
 
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
+import com.uprightpath.ld.thirty.rendering.Renderable;
+import com.uprightpath.ld.thirty.rendering.Renderer;
 
 /**
  * Created by Geo on 8/22/2014.
  */
-public class Agent extends WorldObject {
-    protected final String name;
+public abstract class Agent extends WorldObject implements Renderable {
+    protected String name;
     protected Polygon polygonBase;
     protected Vector2 maxDelta;
     protected Vector2 movement;
     protected boolean fallingThrough = false;
+    protected boolean moving = false;
     protected AgentController agentController;
     protected Platform platform;
     private int jumpTime;
+    private Renderer renderer;
+
+    public Agent() {
+
+    }
 
     public Agent(String name, Polygon polygon, Polygon polygonBase) {
         super(polygon);
@@ -25,6 +33,9 @@ public class Agent extends WorldObject {
     public void updatePosition() {
         this.polygon.setPosition(position.x, position.y);
         this.polygonBase.setPosition(position.x, position.y);
+        if (renderer != null) {
+            renderer.setPosition(position.x, position.y);
+        }
     }
 
     public void applyDelta(Vector2 delta) {
@@ -48,12 +59,12 @@ public class Agent extends WorldObject {
         }
     }
 
-    public void setAgentController(AgentController agentController) {
-        this.agentController = agentController;
-    }
-
     public AgentController getAgentController() {
         return agentController;
+    }
+
+    public void setAgentController(AgentController agentController) {
+        this.agentController = agentController;
     }
 
     public Platform getPlatform() {
@@ -67,9 +78,11 @@ public class Agent extends WorldObject {
     public void applyPlatform() {
         if (platform != null) {
             this.translate(platform.getDelta());
-            delta.x *= platform.getFriction();
-            if (Math.abs(delta.x) < .01f) {
-                delta.x = 0;
+            if (!moving) {
+                delta.x *= platform.getFriction();
+                if (Math.abs(delta.x) < .01f) {
+                    delta.x = 0;
+                }
             }
         }
     }
@@ -108,5 +121,31 @@ public class Agent extends WorldObject {
 
     public void setJumpTime(int jumpTime) {
         this.jumpTime = jumpTime;
+    }
+
+    public abstract boolean collides(Agent agent);
+
+    public abstract void collidedWith(Agent agent);
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isMoving() {
+        return moving;
+    }
+
+    public void setMoving(boolean moving) {
+        this.moving = moving;
+    }
+
+    @Override
+    public Renderer getRenderer() {
+        return renderer;
+    }
+
+    @Override
+    public void setRenderer(Renderer renderer) {
+        this.renderer = renderer;
     }
 }

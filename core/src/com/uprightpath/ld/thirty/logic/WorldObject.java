@@ -1,5 +1,6 @@
 package com.uprightpath.ld.thirty.logic;
 
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 
@@ -10,6 +11,9 @@ public abstract class WorldObject {
     protected Polygon polygon;
     protected Vector2 position = new Vector2();
     protected Vector2 delta = new Vector2();
+
+    public WorldObject() {
+    }
 
     public WorldObject(Polygon polygon) {
         this.polygon = polygon;
@@ -28,8 +32,8 @@ public abstract class WorldObject {
         return delta;
     }
 
-    public void setPosition(Vector2 delta) {
-        setPosition(delta.x, delta.y);
+    public void setDelta(Vector2 delta) {
+        this.setDelta(delta.x, delta.y);
     }
 
     public void setPosition(float x, float y) {
@@ -46,18 +50,21 @@ public abstract class WorldObject {
         updatePosition();
     }
 
-    public void setDelta(Vector2 delta) {
-        this.setDelta(delta.x, delta.y);
-    }
-
     public void setDelta(float x, float y) {
         this.delta.set(x, y);
     }
-
 
     public Vector2 getPosition() {
         return position;
     }
 
+    public void setPosition(Vector2 delta) {
+        setPosition(delta.x, delta.y);
+    }
+
     public abstract void updatePosition();
+
+    public boolean canCollide(Agent agent) {
+        return Intersector.overlaps(agent.getPolygon().getBoundingRectangle(), polygon.getBoundingRectangle());
+    }
 }

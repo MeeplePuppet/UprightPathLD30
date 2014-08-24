@@ -1,23 +1,43 @@
 package com.uprightpath.ld.thirty.story;
 
 import com.badlogic.gdx.utils.Array;
-import com.uprightpath.ld.thirty.logic.Agent;
+import com.uprightpath.ld.thirty.logic.Interactable;
 
 /**
  * Created by Geo on 8/23/2014.
  */
-public abstract class Dialog {
-    private Agent agent;
+public class Dialog {
+    private Story story;
+    private Interactable interactable;
     private String dialog;
-    private Array<String> answers;
+    private Array<Answer> answers;
 
-    public Dialog(Agent agent, String dialog, Array<String> answers) {
-        this.agent = agent;
+    public Dialog() {}
+
+    public Dialog(Story story, Interactable interactable, String dialog, Array<Answer> answers) {
+        this.story = story;
+        this.interactable = interactable;
         this.dialog = dialog;
         this.answers = answers;
     }
 
-    public abstract boolean canPerform(int answer);
+    public Array<Answer> getAnswers() {
+        return answers;
+    }
 
-    public abstract int perform(int answer);
+    public boolean canPerform(int answer) {
+        return answers.get(answer).canPerform(story.getWorldGroup().getCurrentWorld());
+    }
+
+    public int perform(int answer) {
+        return answers.get(answer).perform(story.getWorldGroup().getCurrentWorld());
+    }
+
+    public Interactable getInteractable() {
+        return interactable;
+    }
+
+    public String getDialog() {
+        return dialog;
+    }
 }

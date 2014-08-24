@@ -11,11 +11,14 @@ import com.uprightpath.ld.thirty.story.Story;
  * Created by Geo on 8/23/2014.
  */
 public class WorldGroup {
-    private final Main main;
+    private Main main;
     private Array<World> worlds = new Array<World>();
     private int current;
-    private Story story;
-    private boolean tellingStory;
+    private Interactable interaction;
+
+    public WorldGroup() {
+
+    }
 
     public WorldGroup(Main main) {
         this.main = main;
@@ -25,8 +28,8 @@ public class WorldGroup {
         if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
             worlds.get(current).getWorldRenderer().setFront(false);
             current = (current + 1) % worlds.size;
-            worlds.get(current).getWorldRenderer().setFront(true);
         }
+        worlds.get(current).getWorldRenderer().setFront(true);
         worlds.get(current).applyPhysics();
     }
 
@@ -47,27 +50,64 @@ public class WorldGroup {
 
     public void addWorld(World world) {
         worlds.add(world);
-        worlds.get(0).getWorldRenderer().setFront(true);
+    }
+
+    public void setInteraction(Interactable interaction) {
+        this.interaction = interaction;
     }
 
     public void enterDialog(int id) {
-        tellingStory = true;
-        this.story.setDialog(id);
+        this.interaction.getStory().setDialog(id);
     }
 
     public void exitDialog() {
-        tellingStory = false;
+        interaction = null;
     }
 
     public Story getStory() {
-        return story;
-    }
-
-    public void setStory(Story story) {
-        this.story = story;
+        return interaction.getStory();
     }
 
     public boolean isTellingStory() {
-        return tellingStory;
+        return interaction != null;
+    }
+
+    public World getCurrentWorld() {
+        return worlds.get(current);
+    }
+
+    public void exit(World world) {
+        if (worlds.size == 1) {
+            main.completedWorldGroup();
+        } else {
+            worlds.removeValue(world, true);
+            current = current % worlds.size;
+            update();
+        }
+    }
+
+    public Array<World> getWorlds() {
+        return worlds;
+    }
+
+    public Main getMain() {
+        return main;
+    }
+
+    public void setMain(Main main) {
+        this.main = main;
+    }
+
+    public void createDisplay() {
+        for (int i = 0; i < worlds.size; i++) {
+            worlds.get(i).createDisply();
+            worlds.get(i).getWorldRenderer().setFront(i == current);
+        }
+    }
+
+    public void destoryDisplay() {
+        for (int i = 0; i < worlds.size; i++) {
+            worlds.get(i).destoryDisply();
+        }
     }
 }

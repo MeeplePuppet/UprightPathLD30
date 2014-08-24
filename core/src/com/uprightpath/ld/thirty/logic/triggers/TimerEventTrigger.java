@@ -1,23 +1,17 @@
 package com.uprightpath.ld.thirty.logic.triggers;
 
-import com.uprightpath.ld.thirty.logic.World;
-import com.uprightpath.ld.thirty.logic.WorldEvent;
-import com.uprightpath.ld.thirty.logic.WorldEventTrigger;
+import com.uprightpath.ld.thirty.logic.GlobalEventTrigger;
 
 /**
  * Created by Geo on 8/23/2014.
  */
-public class TimerEventTrigger extends WorldEventTrigger {
+public class TimerEventTrigger extends GlobalEventTrigger {
     private int timer;
     private int time;
     private boolean looping;
 
-    public TimerEventTrigger(World world) {
-        super(world);
-    }
+    public TimerEventTrigger() {
 
-    public TimerEventTrigger(World world, WorldEvent worldEvent) {
-        super(world, worldEvent);
     }
 
 

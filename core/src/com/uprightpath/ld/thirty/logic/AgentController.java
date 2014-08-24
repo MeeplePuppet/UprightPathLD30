@@ -6,6 +6,8 @@ package com.uprightpath.ld.thirty.logic;
 public abstract class AgentController<T extends Agent> {
     protected T agent;
 
+    public AgentController() {}
+
     public AgentController(T agent) {
         this.agent = agent;
     }

@@ -1,6 +1,7 @@
 package com.uprightpath.ld.thirty.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,10 +13,12 @@ import com.uprightpath.ld.thirty.Main;
 public abstract class GameScreen implements Screen {
     protected Main main;
     protected Stage stage;
+    protected InputMultiplexer inputMultiplexer;
 
     public GameScreen(Main main) {
         this.main = main;
         stage = new Stage();
+        inputMultiplexer = new InputMultiplexer();
     }
 
     @Override
@@ -32,6 +35,7 @@ public abstract class GameScreen implements Screen {
         // Draws the stage that's in use.
         stage.act(delta);
         stage.draw();
+        inputMultiplexer.addProcessor(stage);
     }
 
     /**
@@ -43,12 +47,11 @@ public abstract class GameScreen implements Screen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
     public void hide() {
-
     }
 
     @Override
