@@ -3,16 +3,18 @@ package com.uprightpath.ld.thirty.logic.event;
 import com.badlogic.gdx.math.Vector2;
 import com.uprightpath.ld.thirty.logic.GlobalEvent;
 import com.uprightpath.ld.thirty.logic.Platform;
+import com.uprightpath.ld.thirty.logic.World;
 
 /**
  * Created by Geo on 8/23/2014.
  */
 public class PlatformMovementEvent implements GlobalEvent {
-    private  Vector2[] delta;
+    private Vector2[] delta;
     private Platform platform;
     private int current = 0;
 
-    public PlatformMovementEvent() {}
+    public PlatformMovementEvent() {
+    }
 
     public PlatformMovementEvent(Platform platform, Vector2[] delta) {
         this.platform = platform;
@@ -20,7 +22,7 @@ public class PlatformMovementEvent implements GlobalEvent {
     }
 
     @Override
-    public void trigger() {
+    public void trigger(World world) {
         platform.setDelta(delta[current]);
         current = (current + 1) % delta.length;
     }

@@ -75,4 +75,6 @@ public abstract class GameScreen implements Screen {
     public void dispose() {
         stage.dispose();
     }
+
+    public abstract void update();
 }

@@ -9,12 +9,9 @@ import com.uprightpath.ld.thirty.Main;
  * Created by Geo on 8/23/2014.
  */
 public class LoadingScreen extends GameScreen {
-    private float tick = 1f / 20f;
-    private float accum = 0;
     private Table mainTable = new Table();
     private Label lblLoading;
     private ProgressBar progressBar;
-    private int current = 0;
 
     public LoadingScreen(Main main) {
         super(main);
@@ -30,11 +27,15 @@ public class LoadingScreen extends GameScreen {
 
     @Override
     protected void renderImplement(float delta) {
-        accum += delta;
         if (main.manager.update()) {
             main.doneLoadingAssets();
         } else {
             progressBar.setValue(main.manager.getProgress());
         }
+    }
+
+    @Override
+    public void update() {
+
     }
 }

@@ -8,13 +8,12 @@ import com.uprightpath.ld.thirty.logic.World;
  */
 public class DialogEvent implements GlobalEvent {
 
-    private World world;
     private int dialogEvent;
 
-    public DialogEvent() {}
+    public DialogEvent() {
+    }
 
-    public DialogEvent(World world, int dialogEvent) {
-        this.world = world;
+    public DialogEvent(int dialogEvent) {
         this.dialogEvent = dialogEvent;
     }
 
@@ -23,7 +22,7 @@ public class DialogEvent implements GlobalEvent {
     }
 
     @Override
-    public void trigger() {
+    public void trigger(World world) {
         world.getWorldGroup().enterDialog(dialogEvent);
     }
 }

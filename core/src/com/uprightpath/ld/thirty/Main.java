@@ -2,34 +2,40 @@ package com.uprightpath.ld.thirty;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.uprightpath.ld.thirty.builder.WorldBuilder;
 import com.uprightpath.ld.thirty.logic.WorldGroup;
 import com.uprightpath.ld.thirty.screens.GameScreen;
+import com.uprightpath.ld.thirty.screens.GameplayScreenScreen;
 import com.uprightpath.ld.thirty.screens.LoadingScreen;
-import com.uprightpath.ld.thirty.screens.WorldScreen;
+import com.uprightpath.ld.thirty.screens.WorldSelectScreen;
 
 public class Main extends Game {
     public AssetManager manager = new AssetManager();
     public SoundManager soundManager = new SoundManager();
     public MusicManager musicManager = new MusicManager();
+    public Preferences preferences;
     public SpriteBatch batch;
     private Skin skin;
     private TextureAtlas gameAtlas;
     private GameScreen currentScreen;
     private GameScreen loadingScreen;
-    private WorldScreen worldScreen;
+    private GameplayScreenScreen worldScreen;
+    private WorldSelectScreen worldSelectScreen;
+    private WorldGroup worldGroup;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
+        preferences = Gdx.app.getPreferences("com.upright.ld.thirty");
+        manager.setLoader(WorldGroup.class, new WorldGroupLoader(new InternalFileHandleResolver()));
 
         // Set up the various assets to be loaded by the manager.
         manager.load("ui/ui.json", Skin.class);
@@ -39,29 +45,16 @@ public class Main extends Game {
         skin.get("default-font", BitmapFont.class).setMarkupEnabled(true);
         gameAtlas = manager.get("ui/ui.atlas", TextureAtlas.class);
         manager.load("sound/test-hit.wav", Sound.class);
+        for (FileHandle fileHandler : Gdx.files.internal("worlds").list()) {
+            manager.load(fileHandler.path(), WorldGroup.class);
+        }
         loadingScreen = new LoadingScreen(this);
-        worldScreen = new WorldScreen(this);
-        currentScreen = worldScreen;
+        worldSelectScreen = new WorldSelectScreen(this);
+        worldScreen = new GameplayScreenScreen(this);
+        currentScreen = worldSelectScreen;
         this.setScreen(loadingScreen);
-        Kryo kryo = new Kryo();
-
-        System.out.println(Gdx.files.getExternalStoragePath());
-
-        /*
-        Output output = new Output(Gdx.files.external("worlds-1.wg").write(false));
-        WorldGroup worldGroup = WorldBuilder.buildWorldGroup();
-        kryo.writeObject(output, worldGroup);
-        output.close();
-        */
-
-        Input input = new Input(Gdx.files.external("worlds-1.wg").read());
-        WorldGroup worldGroup = kryo.readObject(input, WorldGroup.class);
-        worldGroup.setMain(this);
-        worldGroup.createDisplay();
-        input.close();
-
-        worldScreen.setWorldGroup(worldGroup);
     }
+
 
     /**
      * Used to swap screens or do something while waiting for loading to complete.
@@ -78,6 +71,7 @@ public class Main extends Game {
      */
     public void doneLoadingAssets() {
         soundManager.addSound("test-hit", manager.get("sound/test-hit.wav", Sound.class));
+        currentScreen.update();
         this.setScreen(currentScreen);
     }
 
@@ -90,6 +84,21 @@ public class Main extends Game {
     }
 
     public void completedWorldGroup() {
-        worldScreen.setWorldGroup(WorldBuilder.buildWorldGroup());
+        this.manager.unload("worlds/" + worldGroup.getId() + ".wg");
+        this.manager.load("worlds/" + worldGroup.getId() + ".wg", WorldGroup.class);
+        this.worldGroup.destoryDisplay();
+        this.worldGroup = null;
+        this.worldSelectScreen.update();
+        System.out.println("This was called?");
+        this.setScreen(worldSelectScreen);
+    }
+
+    public void playWorldGroup(WorldGroup worldGroup) {
+        System.out.println("Called?");
+        this.worldGroup = worldGroup;
+        this.worldGroup.setMain(this);
+        this.worldGroup.createDisplay();
+        worldScreen.setWorldGroup(worldGroup);
+        this.setScreen(worldScreen);
     }
 }

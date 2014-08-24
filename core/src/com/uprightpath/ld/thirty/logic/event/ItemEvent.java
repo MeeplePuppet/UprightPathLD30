@@ -12,19 +12,18 @@ public class ItemEvent implements WorldEvent {
     private WorldEventTrigger eventTrigger;
     private String item;
     private int quantity;
-    private World world;
 
-    public ItemEvent() {}
+    public ItemEvent() {
+    }
 
-    public ItemEvent(World world, String item, int quanity, WorldEventTrigger eventTrigger) {
-        this.world = world;
+    public ItemEvent(String item, int quanity, WorldEventTrigger eventTrigger) {
         this.item = item;
         this.quantity = quanity;
         this.eventTrigger = eventTrigger;
     }
 
     @Override
-    public void trigger(Agent agent) {
+    public void trigger(World world, Agent agent) {
         if (agent == world.getPlayer()) {
             world.getPlayer().adjustItem(item, quantity);
             world.removeWorldEventTrigger(eventTrigger);

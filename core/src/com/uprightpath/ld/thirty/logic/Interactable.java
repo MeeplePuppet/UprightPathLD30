@@ -12,5 +12,5 @@ public interface Interactable {
 
     public Story getStory();
 
-    public void interact(Agent agent);
+    public void interact(World world, Agent agent);
 }

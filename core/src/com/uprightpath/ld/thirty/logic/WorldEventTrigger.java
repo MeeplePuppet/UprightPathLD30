@@ -10,7 +10,9 @@ import com.uprightpath.ld.thirty.rendering.Renderer;
 public abstract class WorldEventTrigger extends WorldObject implements Renderable {
     protected WorldEvent event;
     private Renderer renderer;
-    public WorldEventTrigger() {}
+
+    public WorldEventTrigger() {
+    }
 
     public WorldEventTrigger(Polygon polygon) {
         super(polygon);
@@ -18,8 +20,8 @@ public abstract class WorldEventTrigger extends WorldObject implements Renderabl
 
     public abstract boolean canTriggerEvent(Agent agent);
 
-    public void triggerEvent(Agent agent) {
-        event.trigger(agent);
+    public void triggerEvent(World world, Agent agent) {
+        event.trigger(world, agent);
     }
 
     public void setEvent(WorldEvent event) {

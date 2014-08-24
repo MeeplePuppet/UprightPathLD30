@@ -15,6 +15,8 @@ public class WorldGroup {
     private Array<World> worlds = new Array<World>();
     private int current;
     private Interactable interaction;
+    private String name;
+    private int id;
 
     public WorldGroup() {
 
@@ -109,5 +111,22 @@ public class WorldGroup {
         for (int i = 0; i < worlds.size; i++) {
             worlds.get(i).destoryDisply();
         }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

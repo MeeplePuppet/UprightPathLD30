@@ -9,16 +9,13 @@ import com.uprightpath.ld.thirty.logic.WorldEvent;
  */
 public class ReloadEvent implements WorldEvent {
 
-    private  World world;
+    private World world;
 
-    public ReloadEvent() {}
-
-    public ReloadEvent(World world) {
-        this.world = world;
+    public ReloadEvent() {
     }
 
     @Override
-    public void trigger(Agent agent) {
+    public void trigger(World world, Agent agent) {
         agent.setPosition(2f, 2f);
         agent.setDelta(0f, 0f);
         world.getMain().soundManager.playSound("test-hit");

@@ -1,6 +1,6 @@
 
 ui.png
-size: 595,621
+size: 598,621
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
@@ -13,7 +13,7 @@ answer-dialog
   index: -1
 check-field
   rotate: false
-  xy: 75, 93
+  xy: 516, 541
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
@@ -51,7 +51,7 @@ textfield
   index: -1
 check-on
   rotate: false
-  xy: 516, 541
+  xy: 552, 585
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
@@ -72,7 +72,7 @@ copperplate-gothic-bold
   index: -1
 cursor
   rotate: false
-  xy: 75, 88
+  xy: 516, 536
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
@@ -80,7 +80,7 @@ cursor
   index: -1
 default-pane-noborder
   rotate: false
-  xy: 532, 554
+  xy: 568, 598
   size: 1, 1
   split: 0, 0, 0, 0
   orig: 1, 1
@@ -88,7 +88,7 @@ default-pane-noborder
   index: -1
 default-rect
   rotate: false
-  xy: 532, 554
+  xy: 568, 598
   size: 1, 1
   split: 0, 0, 0, 0
   orig: 1, 1
@@ -96,7 +96,7 @@ default-rect
   index: -1
 default-rect-down
   rotate: false
-  xy: 91, 104
+  xy: 532, 552
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
@@ -104,7 +104,7 @@ default-rect-down
   index: -1
 default-round
   rotate: false
-  xy: 2, 12
+  xy: 75, 87
   size: 12, 20
   split: 5, 5, 5, 4
   orig: 12, 20
@@ -119,6 +119,14 @@ default-round-disabled
   offset: 0, 0
   index: -1
 default-round-down
+  rotate: false
+  xy: 2, 12
+  size: 12, 20
+  split: 5, 5, 5, 4
+  orig: 12, 20
+  offset: 0, 0
+  index: -1
+default-round-down-disabled
   rotate: false
   xy: 567, 601
   size: 12, 20
@@ -152,7 +160,7 @@ default-select
   index: -1
 default-select-selection
   rotate: false
-  xy: 516, 536
+  xy: 552, 580
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
@@ -206,7 +214,7 @@ options-button
   index: -1
 selection
   rotate: false
-  xy: 552, 582
+  xy: 581, 604
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
@@ -227,21 +235,21 @@ sound-on
   index: -1
 tree-minus
   rotate: false
-  xy: 552, 585
+  xy: 581, 607
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 tree-plus
   rotate: false
-  xy: 581, 607
+  xy: 89, 93
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 white
   rotate: false
-  xy: 568, 598
+  xy: 597, 620
   size: 1, 1
   orig: 1, 1
   offset: 0, 0

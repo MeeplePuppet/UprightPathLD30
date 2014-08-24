@@ -19,7 +19,7 @@ import com.uprightpath.ld.thirty.story.TapAnswer;
 /**
  * Created by Geo on 8/22/2014.
  */
-public class WorldScreen extends GameScreen {
+public class GameplayScreenScreen extends GameScreen {
     private WorldGroup worldGroup;
     private float tick = 1f / 60f;
     private float accum = 0f;
@@ -30,7 +30,7 @@ public class WorldScreen extends GameScreen {
     private ImageButton btnOption;
     private DialogWidget dialogWidget;
 
-    public WorldScreen(Main main) {
+    public GameplayScreenScreen(Main main) {
         super(main);
         mainTable = new Table();
         mainTable.setFillParent(true);
@@ -128,7 +128,7 @@ public class WorldScreen extends GameScreen {
 
         private void update() {
             for (int i = 0; i < buttons.size; i++) {
-                buttons.get(i).setDisabled(!WorldScreen.this.worldGroup.getStory().canPerform(i));
+                buttons.get(i).setDisabled(!GameplayScreenScreen.this.worldGroup.getStory().canPerform(i));
             }
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
@@ -152,18 +152,16 @@ public class WorldScreen extends GameScreen {
             if (buttons.size > 0) {
                 buttons.get(currentSelected).setStyle(main.getSkin().get("default", TextButton.TextButtonStyle.class));
                 currentSelected = id;
-                if (!buttons.get(currentSelected).isDisabled()) {
-                    buttons.get(currentSelected).setStyle(main.getSkin().get("selected", TextButton.TextButtonStyle.class));
-                }
+                buttons.get(currentSelected).setStyle(main.getSkin().get("selected", TextButton.TextButtonStyle.class));
             }
         }
 
         private void clicked(int i) {
-            WorldScreen.this.worldGroup.getStory().perform(i);
+            GameplayScreenScreen.this.worldGroup.getStory().perform(i);
         }
 
         private class AnswerMouseListener extends ClickListener {
-            private  int id;
+            private int id;
 
             public AnswerMouseListener(int id) {
                 this.id = id;
@@ -176,7 +174,7 @@ public class WorldScreen extends GameScreen {
 
         private class AnswerClickListener extends ChangeListener {
 
-            private  int id;
+            private int id;
 
             public AnswerClickListener(int id) {
                 this.id = id;
@@ -198,6 +196,11 @@ public class WorldScreen extends GameScreen {
     public void resize(int width, int height) {
         super.resize(width, height);
         worldGroup.createDisplay();
+    }
+
+    @Override
+    public void update() {
+
     }
 
 }

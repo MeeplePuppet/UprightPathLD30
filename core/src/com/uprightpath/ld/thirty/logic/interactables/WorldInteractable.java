@@ -14,17 +14,16 @@ import com.uprightpath.ld.thirty.story.Story;
  */
 public class WorldInteractable extends Collision implements Interactable, Renderable {
 
-    private  String name;
-    private  World world;
+    private String name;
     private int textureId;
     private Story story;
     private Renderer renderer;
 
-    public WorldInteractable() {}
+    public WorldInteractable() {
+    }
 
-    public WorldInteractable(String name, World world, Polygon polygon, int textureId) {
+    public WorldInteractable(String name, Polygon polygon, int textureId) {
         super(polygon);
-        this.world = world;
         this.name = name;
     }
 
@@ -48,7 +47,7 @@ public class WorldInteractable extends Collision implements Interactable, Render
     }
 
     @Override
-    public void interact(Agent agent) {
+    public void interact(World world, Agent agent) {
         world.getWorldGroup().setInteraction(this);
     }
 
