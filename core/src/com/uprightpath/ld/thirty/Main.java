@@ -7,7 +7,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -18,10 +17,10 @@ import com.uprightpath.ld.thirty.screens.LoadingScreen;
 import com.uprightpath.ld.thirty.screens.WorldSelectScreen;
 
 public class Main extends Game {
-    public AssetManager manager = new AssetManager();
-    public SoundManager soundManager = new SoundManager();
-    public MusicManager musicManager = new MusicManager();
-    public Preferences preferences;
+    public static AssetManager manager = new AssetManager();
+    public static SoundManager soundManager = new SoundManager();
+    public static MusicManager musicManager = new MusicManager();
+    public static Preferences preferences;
     public SpriteBatch batch;
     private Skin skin;
     private TextureAtlas gameAtlas;
@@ -42,11 +41,12 @@ public class Main extends Game {
         manager.load("ui/ui.atlas", TextureAtlas.class);
         manager.finishLoading();
         skin = manager.get("ui/ui.json", Skin.class);
-        skin.get("default-font", BitmapFont.class).setMarkupEnabled(true);
         gameAtlas = manager.get("ui/ui.atlas", TextureAtlas.class);
-        manager.load("sound/test-hit.wav", Sound.class);
-        for (FileHandle fileHandler : Gdx.files.internal("worlds").list()) {
-            manager.load(fileHandler.path(), WorldGroup.class);
+        manager.load("sound/jump.wav", Sound.class);
+        manager.load("sound/land.wav", Sound.class);
+        manager.load("sound/pickup.wav", Sound.class);
+        for(int i =0; i < 6; i++) {
+            manager.load("worlds/" + i + ".wg", WorldGroup.class);
         }
         loadingScreen = new LoadingScreen(this);
         worldSelectScreen = new WorldSelectScreen(this);
@@ -70,7 +70,9 @@ public class Main extends Game {
      * Should be used to set up the various screens that require assets.
      */
     public void doneLoadingAssets() {
-        soundManager.addSound("test-hit", manager.get("sound/test-hit.wav", Sound.class));
+        this.soundManager.addSound("land", manager.get("sound/land.wav", Sound.class));
+        this.soundManager.addSound("jump", manager.get("sound/jump.wav", Sound.class));
+        this.soundManager.addSound("pickup", manager.get("sound/pickup.wav", Sound.class));
         currentScreen.update();
         this.setScreen(currentScreen);
     }
@@ -84,21 +86,47 @@ public class Main extends Game {
     }
 
     public void completedWorldGroup() {
+        this.preferences.putBoolean("w" + worldGroup.getId(), true);
+        this.preferences.flush();
         this.manager.unload("worlds/" + worldGroup.getId() + ".wg");
         this.manager.load("worlds/" + worldGroup.getId() + ".wg", WorldGroup.class);
         this.worldGroup.destoryDisplay();
         this.worldGroup = null;
+        this.manager.finishLoading();
         this.worldSelectScreen.update();
-        System.out.println("This was called?");
         this.setScreen(worldSelectScreen);
     }
 
     public void playWorldGroup(WorldGroup worldGroup) {
-        System.out.println("Called?");
         this.worldGroup = worldGroup;
         this.worldGroup.setMain(this);
         this.worldGroup.createDisplay();
         worldScreen.setWorldGroup(worldGroup);
         this.setScreen(worldScreen);
+    }
+
+    public void restart() {
+        this.manager.unload("worlds/" + worldGroup.getId() + ".wg");
+        this.manager.load("worlds/" + worldGroup.getId() + ".wg", WorldGroup.class);
+        this.worldGroup.destoryDisplay();
+        this.manager.finishLoading();
+        this.worldGroup = this.manager.get("worlds/" + worldGroup.getId() + ".wg", WorldGroup.class);
+        this.worldGroup.setMain(this);
+        this.worldGroup.createDisplay();
+        this.setScreen(worldScreen);
+    }
+
+    public void close() {
+        if (this.getScreen() == this.worldSelectScreen) {
+            Gdx.app.exit();
+        } else {
+            this.manager.unload("worlds/" + worldGroup.getId() + ".wg");
+            this.manager.load("worlds/" + worldGroup.getId() + ".wg", WorldGroup.class);
+            this.worldGroup.destoryDisplay();
+            this.manager.finishLoading();
+            this.worldGroup = this.manager.get("worlds/" + worldGroup.getId() + ".wg", WorldGroup.class);
+            this.worldSelectScreen.update();
+            this.setScreen(worldSelectScreen);
+        }
     }
 }

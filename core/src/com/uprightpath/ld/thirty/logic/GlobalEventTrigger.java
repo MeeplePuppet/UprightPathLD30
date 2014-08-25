@@ -15,7 +15,7 @@ public abstract class GlobalEventTrigger {
     }
 
 
-    public abstract boolean canTriggerEvent();
+    public abstract boolean canTriggerEvent(World world);
 
     public void triggerEvent(World world) {
         event.trigger(world);
@@ -24,4 +24,8 @@ public abstract class GlobalEventTrigger {
     public void setEvent(GlobalEvent event) {
         this.event = event;
     }
+
+    public abstract boolean remove();
+
+    public void reset() {};
 }

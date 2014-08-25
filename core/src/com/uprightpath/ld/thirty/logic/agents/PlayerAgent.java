@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.uprightpath.ld.thirty.logic.Agent;
 import com.uprightpath.ld.thirty.logic.Interactable;
+import com.uprightpath.ld.thirty.logic.World;
 import com.uprightpath.ld.thirty.story.Story;
 
 /**
@@ -58,7 +59,7 @@ public class PlayerAgent extends Agent implements Interactable {
     }
 
     @Override
-    public void interact(Agent agent) {
+    public void interact(World world, Agent agent) {
 
     }
 }

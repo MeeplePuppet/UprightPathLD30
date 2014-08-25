@@ -1,7 +1,5 @@
 package com.uprightpath.ld.thirty.screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -9,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.uprightpath.ld.thirty.Controls;
 import com.uprightpath.ld.thirty.Main;
 import com.uprightpath.ld.thirty.logic.WorldGroup;
 import com.uprightpath.ld.thirty.story.Answer;
@@ -26,8 +25,8 @@ public class GameplayScreenScreen extends GameScreen {
     private Table mainTable;
     private Table dialogTable;
     private Label lblWorldName;
-    private ImageButton btnSound;
-    private ImageButton btnOption;
+    private ImageButton btnMute;
+    private ImageButton btnOptions;
     private DialogWidget dialogWidget;
 
     public GameplayScreenScreen(Main main) {
@@ -39,18 +38,33 @@ public class GameplayScreenScreen extends GameScreen {
         topTable.setBackground(main.getSkin().getDrawable("default-round-large"));
         lblWorldName = new Label("World Test", main.getSkin());
         topTable.add(lblWorldName).fillX().expandX().align(Align.top);
+        this.optionWindow = new OptionWindow(this, main.getSkin(), true);
+        this.keyAssignWindow = new KeyAssignWindow(this, main.getSkin());
 
-        btnSound = new ImageButton(main.getSkin().getDrawable("sound-on"));
-        topTable.add(btnSound);
+        btnMute = new ImageButton(main.getSkin().getDrawable("sound-on"));
+        btnMute.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Main.musicManager.setMute(btnMute.isChecked());
+                Main.soundManager.setMute(btnMute.isChecked());
+            }
+        });
+        topTable.add(btnMute);
 
-        btnOption = new ImageButton(main.getSkin().getDrawable("options-button"));
-        topTable.add(btnOption);
+        btnOptions = new ImageButton(main.getSkin().getDrawable("options-button"));
+        btnOptions.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                GameplayScreenScreen.this.setOptionMenuVisible(true);
+            }
+        });
+        topTable.add(btnOptions);
 
         mainTable.add(topTable).fillX().row();
 
         dialogTable = new Table();
         mainTable.add(dialogTable).pad(20).fill().expand().expand();
-        stage.addActor(mainTable);
+        stack.addActor(mainTable);
     }
 
     public void setWorldGroup(WorldGroup worldGroup) {
@@ -84,8 +98,10 @@ public class GameplayScreenScreen extends GameScreen {
                 worldGroup.update();
             }
         }
-        worldGroup.render(delta);
-        this.mainTable.setDebug(true, true);
+        if (!worldGroup.isComplete()) {
+            worldGroup.render(delta);
+            lblWorldName.setText(worldGroup.getCurrentWorld().getPlayer().getName() + ": " + worldGroup.getCurrentWorld().getName());
+        }
     }
 
     public class DialogWidget extends Table {
@@ -131,13 +147,15 @@ public class GameplayScreenScreen extends GameScreen {
                 buttons.get(i).setDisabled(!GameplayScreenScreen.this.worldGroup.getStory().canPerform(i));
             }
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-                updateSelected((buttons.size + currentSelected - 1) % buttons.size);
-            } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-                updateSelected((buttons.size + currentSelected + 1) % buttons.size);
+            if (buttons.size > 0) {
+                if (Controls.UP.isJustDown()) {
+                    updateSelected((buttons.size + currentSelected - 1) % buttons.size);
+                } else if (Controls.DOWN.isJustDown()) {
+                    updateSelected((buttons.size + currentSelected + 1) % buttons.size);
+                }
             }
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
+            if (Controls.ACCEPT.isJustDown()) {
                 if (buttons.size == 0) {
                     btnContinue.toggle();
                 } else {
@@ -203,4 +221,7 @@ public class GameplayScreenScreen extends GameScreen {
 
     }
 
+    public void hide() {
+        super.hide();
+    }
 }

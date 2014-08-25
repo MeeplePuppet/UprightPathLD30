@@ -18,7 +18,7 @@ public abstract class WorldEventTrigger extends WorldObject implements Renderabl
         super(polygon);
     }
 
-    public abstract boolean canTriggerEvent(Agent agent);
+    public abstract boolean canTriggerEvent(World world, Agent agent);
 
     public void triggerEvent(World world, Agent agent) {
         event.trigger(world, agent);
@@ -44,4 +44,6 @@ public abstract class WorldEventTrigger extends WorldObject implements Renderabl
             renderer.setPosition(position.x, position.y);
         }
     }
+
+    public void reset() {};
 }

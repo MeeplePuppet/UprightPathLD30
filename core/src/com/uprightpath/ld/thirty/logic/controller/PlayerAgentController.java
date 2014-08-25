@@ -1,7 +1,7 @@
 package com.uprightpath.ld.thirty.logic.controller;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.uprightpath.ld.thirty.Controls;
+import com.uprightpath.ld.thirty.Main;
 import com.uprightpath.ld.thirty.logic.AgentController;
 import com.uprightpath.ld.thirty.logic.agents.PlayerAgent;
 
@@ -11,7 +11,8 @@ import com.uprightpath.ld.thirty.logic.agents.PlayerAgent;
 public class PlayerAgentController extends AgentController<PlayerAgent> {
     private int jumpTime;
 
-    public PlayerAgentController() {}
+    public PlayerAgentController() {
+    }
 
     public PlayerAgentController(PlayerAgent agent) {
         super(agent);
@@ -20,26 +21,28 @@ public class PlayerAgentController extends AgentController<PlayerAgent> {
     @Override
     public void updateAgentLogic() {
         agent.setMoving(false);
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if (Controls.LEFT.isDown()) {
             agent.applyDelta(-agent.getMovement().x / (agent.getPlatform() == null ? 10 : 1), 0);
             agent.setMoving(true);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        if (Controls.RIGHT.isDown()) {
             agent.applyDelta(agent.getMovement().x / (agent.getPlatform() == null ? 10 : 1), 0);
             agent.setMoving(true);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        if (Controls.DOWN.isDown()) {
             agent.setFallingThrough(true);
         } else {
             agent.setFallingThrough(false);
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Z) && Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        if (Controls.JUMP.isJustDown() && Controls.DOWN.isDown()) {
             agent.setPlatform(null);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.Z) && agent.getPlatform() != null) {
+            Main.soundManager.playSound("jump");
+        } else if (Controls.JUMP.isJustDown() && agent.getPlatform() != null) {
             agent.applyDelta(0, agent.getMovement().y);
             agent.setPlatform(null);
             jumpTime = agent.getJumpTime();
-        } else if (Gdx.input.isKeyPressed(Input.Keys.Z) && agent.getPlatform() == null && jumpTime > 0) {
+            Main.soundManager.playSound("jump");
+        } else if (Controls.JUMP.isDown() && agent.getPlatform() == null && jumpTime > 0) {
             agent.applyDelta(0, agent.getMovement().y / agent.getJumpTime());
             jumpTime--;
         } else {

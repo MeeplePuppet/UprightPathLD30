@@ -7,11 +7,13 @@ import com.uprightpath.ld.thirty.logic.WorldGroup;
  * Created by Geo on 8/23/2014.
  */
 public class Story {
-    private  WorldGroup worldGroup;
+    private WorldGroup worldGroup;
     private IntMap<Dialog> dialogs = new IntMap<Dialog>();
     private int currentDialog = 0;
 
-    public Story() {}
+    public Story() {
+    }
+
     public Story(WorldGroup worldGroup) {
         this.worldGroup = worldGroup;
     }

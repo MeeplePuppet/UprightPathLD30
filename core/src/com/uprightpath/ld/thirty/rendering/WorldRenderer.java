@@ -23,7 +23,7 @@ public class WorldRenderer {
     public WorldRenderer(World world) {
         this.world = world;
         this.shapeRenderer = new ShapeRenderer();
-        this.camera = new OrthographicCamera(Gdx.graphics.getWidth() / Gdx.graphics.getHeight() * world.getMain().getUnits(), world.getMain().getUnits());
+        this.camera = new OrthographicCamera(Gdx.graphics.getWidth() / Gdx.graphics.getHeight() * 10, 10);
         this.camera.translate(0, 0, 10);
         this.camera.lookAt(0, 0, 0);
     }
@@ -41,7 +41,6 @@ public class WorldRenderer {
     }
 
     public void render(float delta) {
-        float alpha;
         camera.update();
         if (front) {
             Gdx.gl.glLineWidth(1);

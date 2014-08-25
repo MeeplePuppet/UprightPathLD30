@@ -1,16 +1,15 @@
 package com.uprightpath.ld.thirty.logic;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.uprightpath.ld.thirty.Controls;
 import com.uprightpath.ld.thirty.Main;
 import com.uprightpath.ld.thirty.story.Story;
 
 /**
  * Created by Geo on 8/23/2014.
  */
-public class WorldGroup {
+public class WorldGroup implements Comparable<WorldGroup> {
     private Main main;
     private Array<World> worlds = new Array<World>();
     private int current;
@@ -27,12 +26,15 @@ public class WorldGroup {
     }
 
     public void update() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+        if (Controls.SWAP.isJustDown()) {
             worlds.get(current).getWorldRenderer().setFront(false);
             current = (current + 1) % worlds.size;
         }
         worlds.get(current).getWorldRenderer().setFront(true);
         worlds.get(current).applyPhysics();
+        for (int i = 0; i < worlds.size; i++) {
+            worlds.get(i).cleanWorld();
+        }
     }
 
     public void updateCameras(Vector3 update) {
@@ -80,6 +82,7 @@ public class WorldGroup {
 
     public void exit(World world) {
         if (worlds.size == 1) {
+            worlds.clear();
             main.completedWorldGroup();
         } else {
             worlds.removeValue(world, true);
@@ -128,5 +131,14 @@ public class WorldGroup {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public boolean isComplete() {
+        return worlds.size == 0;
+    }
+
+    @Override
+    public int compareTo(WorldGroup o) {
+        return id - o.id;
     }
 }

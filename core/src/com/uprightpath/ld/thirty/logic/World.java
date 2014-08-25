@@ -1,10 +1,9 @@
 package com.uprightpath.ld.thirty.logic;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.uprightpath.ld.thirty.Controls;
 import com.uprightpath.ld.thirty.Main;
 import com.uprightpath.ld.thirty.logic.agents.PlayerAgent;
 import com.uprightpath.ld.thirty.logic.interactables.WorldInteractable;
@@ -61,14 +60,17 @@ public class World {
         Agent agentCollide;
         Collision collision;
         Platform platform, collided = null;
-        WorldEventTrigger agentEventTrigger;
-        GlobalEventTrigger worldEventTrigger;
+        WorldEventTrigger worldEventTrigger;
+        GlobalEventTrigger globalEventTrigger;
         WorldInteractable collisionInteractable;
 
         for (int j = 0; j < globalEventTriggers.size; j++) {
-            worldEventTrigger = globalEventTriggers.get(j);
-            if (worldEventTrigger.canTriggerEvent()) {
-                worldEventTrigger.triggerEvent();
+            globalEventTrigger = globalEventTriggers.get(j);
+            if (globalEventTrigger.canTriggerEvent(this)) {
+                globalEventTrigger.triggerEvent(this);
+            }
+            if (globalEventTrigger.remove()) {
+                globalEventTriggersRemove.add(globalEventTrigger);
             }
         }
 
@@ -116,6 +118,9 @@ public class World {
                     collided = platform;
                     agent.getDelta().y = 0;
                 }
+            }
+            if (agent.getPlatform() == null && collided != null) {
+                Main.soundManager.playSound("land");
             }
             agent.setPlatform(collided);
 
@@ -178,54 +183,69 @@ public class World {
 
             for (int j = 0; j < collisionInteractables.size; j++) {
                 collisionInteractable = collisionInteractables.get(j);
-                if (collisionInteractable.canCollide(agent) && agent == this.player && Gdx.input.isKeyJustPressed(Input.Keys.X)) {
-                    collisionInteractable.interact(agent);
+                if (collisionInteractable.canCollide(agent) && agent == this.player && Controls.INTERACT.isDown()) {
+                    collisionInteractable.interact(this, agent);
                 }
             }
 
             for (int j = 0; j < worldEventTriggers.size; j++) {
-                agentEventTrigger = worldEventTriggers.get(j);
-                if (agentEventTrigger.canTriggerEvent(agent)) {
-                    agentEventTrigger.triggerEvent(agent);
+                worldEventTrigger = worldEventTriggers.get(j);
+                if (worldEventTrigger.canTriggerEvent(this, agent)) {
+                    worldEventTrigger.triggerEvent(this, agent);
                 }
             }
         }
+    }
 
+    public void cleanWorld() {
         for (int i = 0; i < agentsRemove.size; i++) {
             agents.removeValue(agentsRemove.get(i), true);
             renderables.removeValue(agentsRemove.get(i), true);
         }
+        renderablesRemove.clear();
         for (int i = 0; i < collisionsRemove.size; i++) {
             collisions.removeValue(collisionsRemove.get(i), true);
             if (collisionsRemove.get(i) instanceof Renderable) {
                 renderables.removeValue((Renderable) collisionsRemove.get(i), true);
             }
         }
+        collisionsRemove.clear();
         for (int i = 0; i < platformsRemove.size; i++) {
             platforms.removeValue(platformsRemove.get(i), true);
             renderables.removeValue(platformsRemove.get(i), true);
+            for (int j = 0; j < agents.size; j++) {
+                if (agents.get(j).getPlatform() == platformsRemove.get(i)) {
+                    agents.get(j).setPlatform(null);
+                }
+
+            }
         }
+        platformsRemove.clear();
         for (int i = 0; i < globalEventTriggersRemove.size; i++) {
             globalEventTriggers.removeValue(globalEventTriggersRemove.get(i), true);
             if (globalEventTriggersRemove.get(i) instanceof Renderable) {
                 renderables.removeValue((Renderable) globalEventTriggersRemove.get(i), true);
             }
         }
+        globalEventTriggersRemove.clear();
         for (int i = 0; i < worldEventTriggersRemove.size; i++) {
             worldEventTriggers.removeValue(worldEventTriggersRemove.get(i), true);
             if (worldEventTriggersRemove.get(i) instanceof Renderable) {
                 renderables.removeValue((Renderable) worldEventTriggersRemove.get(i), true);
             }
         }
+        worldEventTriggersRemove.clear();
         for (int i = 0; i < collisionInteractablesRemove.size; i++) {
             collisionInteractables.removeValue(collisionInteractablesRemove.get(i), true);
             if (collisionInteractablesRemove.get(i) instanceof Renderable) {
                 renderables.removeValue((Renderable) collisionInteractablesRemove.get(i), true);
             }
         }
+        collisionInteractablesRemove.clear();
         for (int i = 0; i < renderablesRemove.size; i++) {
             renderables.removeValue(renderablesRemove.get(i), true);
         }
+        renderablesRemove.clear();
     }
 
     public void addPlatform(Platform platform) {
@@ -344,6 +364,7 @@ public class World {
     public void destoryDisply() {
         if (worldRenderer != null) {
             worldRenderer.dispose();
+            worldRenderer = null;
         }
     }
 }
